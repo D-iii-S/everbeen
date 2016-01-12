@@ -21,6 +21,9 @@ public abstract class SkeletalXSDClassPathResolver implements XSDClassPathResolv
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 		log.debug("Resolving entity with publicId={}", publicId);
+		if (publicId == null) {
+			return null;
+		}
 		final Matcher m = BEEN_XSD_PUBLIC_ID.matcher(publicId);
 		if (!m.matches()) {
 			return null;
