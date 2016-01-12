@@ -26,7 +26,7 @@
 		<httpclient.version>4.2.3</httpclient.version>
 		<httpcore.version>4.2.3</httpcore.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
-		<jaxb2-basics-runtime.version>0.6.4</jaxb2-basics-runtime.version>
+		<jaxb2-basics-runtime.version>0.11.0</jaxb2-basics-runtime.version>
 		<jeromq.version>0.2.0</jeromq.version>
 		<jline.version>2.10</jline.version>
 		<junit.version>4.11</junit.version>
@@ -36,16 +36,16 @@
 		<sigar.version>1.6.4</sigar.version>
 		<tapestry-cometd.version>0.9.17</tapestry-cometd.version>
 		<tapestry-conversations.version>0.1.2</tapestry-conversations.version>
-		<tapestry5-jquery.version>3.3.1</tapestry5-jquery.version>
+		<tapestry5-jquery.version>3.4.2</tapestry5-jquery.version>
 		<tapestry5.version>5.3.6</tapestry5.version>
 		<servlet-api.version>2.5</servlet-api.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
 		<jetty-maven-plugin.version>8.1.7.v20120910</jetty-maven-plugin.version>
-		<jvnetbasics.version>0.6.4</jvnetbasics.version>
+		<jvnetbasics.version>0.11.0</jvnetbasics.version>
 		<jvnetfluent.version>3.0</jvnetfluent.version>
-		<jvnetjaxb.version>0.8.3</jvnetjaxb.version>
+		<jvnetjaxb.version>0.13.0</jvnetjaxb.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>

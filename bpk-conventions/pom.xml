@@ -32,24 +32,10 @@
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<version>${jvnetjaxb.version}</version>
 
-				<dependencies>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-basics</artifactId>
-						<version>${jvnetbasics.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-fluent-api</artifactId>
-						<version>${jvnetfluent.version}</version>
-					</dependency>
-				</dependencies>
-
 				<configuration>
 					<schemaDirectory>${project.basedir}/src/main/resources/cz/cuni/mff/d3s/been/bpk</schemaDirectory>
 					<extension>true</extension>
-					<forceRegenerate>true</forceRegenerate>
+					<strict>false</strict>
 					<episode>true</episode>
 					<catalog>src/main/resources/cz/cuni/mff/d3s/been/bpk/bpk-config.catalog.xml</catalog>
 					<args>
@@ -59,6 +45,18 @@
 						<arg>-Xfluent-api</arg>
 						<arg>-Xcopyable</arg>
 					</args>
+					<plugins>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>${jvnetbasics.version}</version>
+						</plugin>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-fluent-api</artifactId>
+							<version>${jvnetfluent.version}</version>
+						</plugin>
+					</plugins>
 				</configuration>
 
 				<executions>

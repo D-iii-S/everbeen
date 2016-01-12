@@ -31,6 +31,7 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<!-- TODO Why dependency on jaxb2-basics and not jaxb2-basics-runtime ? -->
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>jaxb2-basics</artifactId>
@@ -63,24 +64,10 @@
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<version>${jvnetjaxb.version}</version>
 
-				<dependencies>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-basics</artifactId>
-						<version>${jvnetbasics.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-fluent-api</artifactId>
-						<version>${jvnetfluent.version}</version>
-					</dependency>
-				</dependencies>
-
 				<configuration>
 					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 					<extension>true</extension>
-					<forceRegenerate>true</forceRegenerate>
+					<strict>false</strict>
 					<episode>true</episode>
 					<catalog>${project.basedir}/src/main/resources/xsd/core-data.catalog.xml</catalog>
 					<args>
@@ -90,6 +77,21 @@
 						<arg>-Xfluent-api</arg>
 						<arg>-Xcopyable</arg>
 					</args>
+
+					<plugins>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>${jvnetbasics.version}</version>
+						</plugin>
+
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-fluent-api</artifactId>
+							<version>${jvnetfluent.version}</version>
+						</plugin>
+					</plugins>
+
 				</configuration>
 
 				<executions>

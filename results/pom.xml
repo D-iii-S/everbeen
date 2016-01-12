@@ -13,6 +13,7 @@
 	</parent>
 
 	<dependencies>
+<!-- TODO Why dependency on jaxb2-basics and not jaxb2-basics-runtime ? -->
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>jaxb2-basics</artifactId>
@@ -47,26 +48,40 @@
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<version>${jvnetjaxb.version}</version>
 
+				<dependencies>
+					<!-- schema dependencies -->
+					<dependency>
+						<groupId>cz.cuni.mff.d3s.been</groupId>
+						<artifactId>core-data</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+					<!-- TODO Why does not the core-data artifact bring in the runtime dependency ? -->
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-basics-runtime</artifactId>
+						<version>${jaxb2-basics-runtime.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>cz.cuni.mff.d3s.been</groupId>
+						<artifactId>xsd-catalog-resolver</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+
 				<configuration>
 					<plugins>
-						<dependency>
-							<groupId>cz.cuni.mff.d3s.been</groupId>
-							<artifactId>xsd-catalog-resolver</artifactId>
-							<version>${project.version}</version>
-						</dependency>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>${jvnetbasics.version}</version>
+						</plugin>
 
-						<!-- schema dependencies -->
-						<dependency>
-							<groupId>cz.cuni.mff.d3s.been</groupId>
-							<artifactId>core-data</artifactId>
-							<version>${project.version}</version>
-						</dependency>
-
-						<dependency>
+						<plugin>
 							<groupId>org.jvnet.jaxb2_commons</groupId>
 							<artifactId>jaxb2-fluent-api</artifactId>
 							<version>${jvnetfluent.version}</version>
-						</dependency>
+						</plugin>
+
 					</plugins>
 
 					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
@@ -75,7 +90,7 @@
 						<arg>-Xfluent-api</arg>
 					</args>
 					<extension>true</extension>
-					<forceRegenerate>true</forceRegenerate>
+					<strict>false</strict>
 					<catalogResolver>cz.cuni.mff.d3s.been.xml.resolve.BEENClassPathCatalogResolver</catalogResolver>
 				</configuration>
 

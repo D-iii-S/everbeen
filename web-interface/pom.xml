@@ -258,17 +258,16 @@
 
 	<repositories>
 		<repository>
+			<!-- FIXME: This will eventually break if GitHub
+			     (again) decides to move content elsewhere.
+			-->
 			<id>uklance-github</id>
-			<url>https://github.com/uklance/releases/raw/master</url>
+			<url>https://raw.githubusercontent.com/uklance/releases/master/</url>
 		</repository>
-
+		
 		<repository>
-			<id>devlab722-repo</id>
-			<url>http://nexus.devlab722.net/nexus/content/repositories/releases
-			</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>maven-central</id>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
 
