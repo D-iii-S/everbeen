@@ -125,14 +125,6 @@
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>${versions-maven-plugin.version}</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<configuration>
-					<show>package</show>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -141,6 +133,7 @@
 				<configuration>
 					<show>package</show>
 					<excludePackageNames>cz.cuni.mff.d3s.been.web:cz.cuni.mff.d3s.been.web.*</excludePackageNames>
+					<failOnError>false</failOnError>
 				</configuration>
 				<executions>
 					<execution>
