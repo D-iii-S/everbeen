@@ -86,6 +86,7 @@
 
 					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 					<args>
+						<arg>-npa</arg>
 						<arg>-XtoString</arg>
 						<arg>-Xfluent-api</arg>
 					</args>

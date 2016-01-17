@@ -71,11 +71,12 @@
 					<episode>true</episode>
 					<catalog>${project.basedir}/src/main/resources/xsd/core-data.catalog.xml</catalog>
 					<args>
+						<arg>-npa</arg>
 						<arg>-Xequals</arg>
+						<arg>-Xcopyable</arg>
 						<arg>-XhashCode</arg>
 						<arg>-XtoString</arg>
 						<arg>-Xfluent-api</arg>
-						<arg>-Xcopyable</arg>
 					</args>
 
 					<plugins>

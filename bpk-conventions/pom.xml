@@ -39,11 +39,12 @@
 					<episode>true</episode>
 					<catalog>src/main/resources/cz/cuni/mff/d3s/been/bpk/bpk-config.catalog.xml</catalog>
 					<args>
+						<arg>-npa</arg>
 						<arg>-Xequals</arg>
+						<arg>-Xcopyable</arg>
 						<arg>-XhashCode</arg>
 						<arg>-XtoString</arg>
 						<arg>-Xfluent-api</arg>
-						<arg>-Xcopyable</arg>
 					</args>
 					<plugins>
 						<plugin>
