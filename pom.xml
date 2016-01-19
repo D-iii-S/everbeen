@@ -31,7 +31,7 @@
 		<jline.version>2.10</jline.version>
 		<junit.version>4.11</junit.version>
 		<maven.version>3.0.5</maven.version>
-		<mongo.version>2.11.1</mongo.version>
+		<mongo.version>2.14.1</mongo.version>
 		<mockito.version>1.9.5</mockito.version>
 		<sigar.version>1.6.4</sigar.version>
 		<tapestry-cometd.version>0.9.17</tapestry-cometd.version>
