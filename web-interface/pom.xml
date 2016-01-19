@@ -14,13 +14,27 @@
 	<packaging>war</packaging>
 	<name>web-interface Tapestry 5 Application</name>
 	<dependencies>
-		<!-- Too set up an application with a database, change the artifactId below to
+		<!-- To set up an application with a database, change the artifactId below to
 			 tapestry-hibernate, and add a dependency on your JDBC driver. You'll also
 			 need to add Hibernate configuration files, such as hibernate.cfg.xml. -->
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-core</artifactId>
 			<version>${tapestry5.version}</version>
+			<!-- TODO Javassist dependency overrides included as recommended in Tapestry 5.3.8 release notes for Java 8 compatibility. -->
+			<exclusions>
+				<exclusion>
+				<artifactId>javassist</artifactId>
+				<groupId>javassist</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- TODO Javassist dependency overrides included as recommended in Tapestry 5.3.8 release notes for Java 8 compatibility. -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.20.0-GA</version>
 		</dependency>
 
 		<dependency>
