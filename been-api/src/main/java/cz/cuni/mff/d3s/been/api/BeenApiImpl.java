@@ -616,7 +616,7 @@ final class BeenApiImpl implements BeenApi {
 		final String groupId = descriptor.getGroupId();
 		final String bpkId = descriptor.getBpkId();
 		final String version = descriptor.getVersion();
-		final String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s'", groupId, bpkId, version);
+		final String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s/%s'", groupId, bpkId, version, descriptor.getName());
 
 		checkIsActive(errorMsg);
 
@@ -904,7 +904,9 @@ final class BeenApiImpl implements BeenApi {
 
 		// check if cluster is live is done in getTaskDescriptors method
 		try {
-			return getTaskDescriptors(bpkIdentifier).get(descriptorName);
+			final TaskDescriptor td = getTaskDescriptors(bpkIdentifier).get(descriptorName);
+			if (td == null) throw new BeenApiException(String.format("No task descriptor named '%s' found in BPK [%s]", descriptorName, bpkIdentifier));
+			return td;
 		} catch (BeenApiException e) {
 			throw createBeenApiException(errorMsg, e);
 		}
@@ -1327,6 +1329,7 @@ final class BeenApiImpl implements BeenApi {
 					query.toString(),
 					answer.getStatus().getDescription()));
 		}
+		log.debug("Deserializing returned data: {}", answer.getData());
 		try {
 			return jsonUtils.deserialize(answer.getData(), entityClass);
 		} catch (JsonException e) {
@@ -1397,9 +1400,8 @@ final class BeenApiImpl implements BeenApi {
 		try {
 			final SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
 			final SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-			final String hostname = (String) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_HOST_NAME);
-			final int port = (int) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_PORT);
-			return swRepoClientFactory.getClient(hostname, port);
+			final String addresses = (String) swInfo.getParam(SWRepositoryServiceInfoConstants.ADDRESSES);
+			return swRepoClientFactory.getClient(addresses);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}

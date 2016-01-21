@@ -4,7 +4,6 @@ import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,5 +36,17 @@ class FetchQuery extends SkeletalQuery implements Serializable {
 	@Override
 	public Set<String> getMappings() {
 		return mappings;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("select ");
+		sb.append(mappings == null ? "*" : mappings.toString());
+		sb.append(" from ");
+		sb.append(getEntityID().toString());
+		sb.append(" where ");
+		sb.append(getSelectors().toString());
+		return sb.toString();
 	}
 }

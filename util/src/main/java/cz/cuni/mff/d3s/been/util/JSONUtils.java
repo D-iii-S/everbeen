@@ -1,15 +1,16 @@
 package cz.cuni.mff.d3s.been.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.introspect.VisibilityChecker;
+import org.codehaus.jackson.type.JavaType;
 import org.codehaus.jackson.type.TypeReference;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * A utility class for JSON serialization and de-serialization
@@ -43,6 +44,25 @@ public class JSONUtils {
 	 */
 	public static JSONUtils newInstance(ObjectMapper om) {
 		return new JSONUtils(om);
+	}
+
+	public static JSONUtils newFieldMapperInstance() {
+		final ObjectMapper om = new ObjectMapper();
+		om.setSerializationConfig(om.getSerializationConfig().without(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
+				new FieldVisibilityChecker()));
+		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
+		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+
+		return JSONUtils.newInstance(om);
+	}
+
+	/**
+	 * Get the object mapper associated with this utils instance.
+	 *
+	 * @return The utils instance object mapper
+	 */
+	public ObjectMapper getOM() {
+		return om;
 	}
 
 	/**
@@ -122,6 +142,50 @@ public class JSONUtils {
 			throw new JsonException(String.format("Error when unmarshalling collection of %s", itemType.getSimpleName()), e);
 		}
 		return deserializedData;
+	}
+
+	/**
+	 * Deserialize a batch of JSON object into typed maps, using types described in parameter.
+	 *
+	 * @param serializedObjects JSON to deserialize
+	 * @param typeMap Types of the object's attributes
+	 * @param aliases Field naming aliases
+	 * @param ignoreBrokenItems Whether items that make the parsing crash should be omitted, rather than interrupting the entire deserialization
+	 *
+	 * @return A collection of maps resulting from the objects' deserialization
+	 *
+	 * @throws JsonException When one of given Strings is not valid JSON or when it doesn't contain correctly typed values
+	 */
+	public Collection<Map<String, Object>> deserialize(Collection<String> serializedObjects, Map<String, Class<?>> typeMap, Map<String, String> aliases, boolean ignoreBrokenItems) throws JsonException {
+		if (aliases == null) aliases = new TreeMap<String, String>();
+		final JsonToTypedMap jttm = new JsonToTypedMap(typeMap, aliases);
+		final List<Map<String, Object>> res = new ArrayList<Map<String, Object>>(serializedObjects.size());
+		for (String so: serializedObjects) {
+			try {
+				res.add(jttm.convert(so));
+			} catch (JsonException e) {
+				// only rethrow this if ignore is not set
+				if (!ignoreBrokenItems) {
+					throw e;
+				}
+			}
+		}
+		return res;
+	}
+
+	public Collection<Map<String, Object>> deserialize(byte [] dataset, Map<String, Class<?>> typeMap, Map<String, String> aliases, boolean ignoreBrokenItems) throws JsonException {
+		final ObjectMapper om = new ObjectMapper();
+		final Collection<Map<String, Object>> coll;
+		try {
+			final JavaType recordType = om.getTypeFactory().constructMapType(Map.class, String.class, Object.class);
+			final JavaType collType = om.getTypeFactory().constructCollectionType(List.class, recordType);
+			coll = (Collection<Map<String, Object>>) om.readValue(dataset, collType);
+		} catch (JsonParseException e) {
+			throw new JsonException("Unmarshaling error reading dataset (invalid JSON)", e);
+		} catch (IOException e) {
+			throw new JsonException("I/O error reading dataset", e);
+		}
+		return coll;
 	}
 
 }
