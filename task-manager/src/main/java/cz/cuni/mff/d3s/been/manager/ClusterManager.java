@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -15,7 +15,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  * 
  * @author Martin Sixta
  */
-final class ClusterManager implements IClusterService {
+final class ClusterManager implements ClusterService {
 	private static final Logger log = LoggerFactory.getLogger(ClusterManager.class);
 
 	private final LocalRuntimeListener localRuntimeListener;

@@ -18,7 +18,7 @@ import cz.cuni.mff.d3s.been.storage.Storage;
 /**
  * Generic persistence layer for BEEN entities
  */
-public final class ObjectRepository implements IClusterService {
+public final class ObjectRepository implements ClusterService {
 
 	private static final Logger log = LoggerFactory.getLogger(ObjectRepository.class);
 

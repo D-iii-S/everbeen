@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
  * 
  * @author darklight
  */
-public class SoftwareRepository implements IClusterService {
+public class SoftwareRepository implements ClusterService {
 
 	private static final Logger log = LoggerFactory.getLogger(SoftwareRepository.class);
 	private final String beenId;

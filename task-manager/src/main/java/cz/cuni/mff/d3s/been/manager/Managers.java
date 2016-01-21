@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.manager;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
  * @author Martin Sixta
  */
 public final class Managers {
-	private static IClusterService clusterManager;
+	private static ClusterService clusterManager;
 
 	/**
 	 * Returns Task Manager implementation as a service.
@@ -19,7 +19,7 @@ public final class Managers {
 	 * 
 	 * @return Task Manager implementation as a service
 	 */
-	public static IClusterService getManager(ClusterContext ctx) {
+	public static ClusterService getManager(ClusterContext ctx) {
 		if (clusterManager == null) {
 			clusterManager = new ClusterManager(ctx);
 		}

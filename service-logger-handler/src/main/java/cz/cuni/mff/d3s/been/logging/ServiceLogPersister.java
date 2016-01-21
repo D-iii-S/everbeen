@@ -12,7 +12,7 @@ import com.hazelcast.core.IQueue;
 
 import com.hazelcast.core.RuntimeInterruptedException;
 import cz.cuni.mff.d3s.been.BeenPackageIdentifier;
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
@@ -25,7 +25,7 @@ import cz.cuni.mff.d3s.been.util.JsonException;
 /**
  * A persistence hook for service log messages
  */
-public class ServiceLogPersister implements IClusterService {
+public class ServiceLogPersister implements ClusterService {
 
 	volatile private IQueue<EntityCarrier> logPersistence;
 	private BlockingQueue<LogMessage> logs = new LinkedBlockingQueue<>();

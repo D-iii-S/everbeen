@@ -53,25 +53,25 @@ public class Runner implements Reapable {
 	// COMMAND LINE ARGUMENTS
 	// ------------------------------------------------------------------------
 
-	@Option(name = "-t", aliases = { "--node-type" }, usage = "Type of the node. DEFAULT is DATA")
+	@Option(name = "-t", aliases = { "--node-type" }, usage = "Node type, use DATA for nodes that manage cluster and NATIVE for nodes that run benchmarks. Default is DATA.")
 	private NodeType nodeType = NodeType.DATA;
 
 	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path or URL to BEEN config file.")
 	private String configFile;
 
-	@Option(name = "-dc", aliases = { "--dump-config" }, usage = "Whether to print runtime configuration and exit")
+	@Option(name = "-dc", aliases = { "--dump-config" }, usage = "Print configuration and exit.")
 	private boolean dumpConfig;
 
-	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Whether to run Host runtime on this node")
+	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Execute Host Runtime on this node. Use on nodes that should execute tasks.")
 	private boolean runHostRuntime = false;
 
-	@Option(name = "-sw", aliases = { "--software-repository" }, usage = "Whether to run Software Repository on this node.")
-	private boolean runSWRepository = false;
+	@Option(name = "-or", aliases = { "--object-repository" }, usage = "Execute Object Repository on this node. Use on node that should persist user data.")
+	private boolean runObjectRepository = false;
 
-	@Option(name = "-rr", aliases = { "--repository" }, usage = "Whether to run Repository on this node. Requires a running matching persistence layer.")
-	private boolean runRepository = false;
+	@Option(name = "-sw", aliases = { "--software-repository" }, usage = "Execute Software Repository on this node. Use on node that should provide task packages.")
+	private boolean runSoftwareRepository = false;
 
-	@Option(name = "-h", aliases = { "--help" }, usage = "Prints help")
+	@Option(name = "-h", aliases = { "--help" }, usage = "Print usage and exit.")
 	private boolean printHelp = false;
 
 	/**
@@ -152,7 +152,7 @@ public class Runner implements Reapable {
 		registerServiceCleaner();
 		try {
 			// standalone services
-			if (runSWRepository) {
+			if (runSoftwareRepository) {
 				clusterReaper.pushTarget(startSWRepository());
 			}
 
@@ -168,7 +168,7 @@ public class Runner implements Reapable {
 			clusterReaper.pushTarget(startLogPersister());
 
 			// Services that require a persistence layer
-			if (runRepository) {
+			if (runObjectRepository) {
 				final Storage storage = StorageBuilderFactory.createBuilder(properties).build();
 				clusterReaper.pushTarget(startRepository(storage));
 			}
@@ -255,27 +255,27 @@ public class Runner implements Reapable {
 		}
 	}
 
-	private IClusterService startTaskManager() throws ServiceException {
-		IClusterService taskManager = Managers.getManager(clusterContext);
+	private ClusterService startTaskManager() throws ServiceException {
+		ClusterService taskManager = Managers.getManager(clusterContext);
 		taskManager.start();
 		return taskManager;
 	}
 
-	private IClusterService startHostRuntime(ClusterContext context, Properties properties) throws ServiceException {
+	private ClusterService startHostRuntime(ClusterContext context, Properties properties) throws ServiceException {
 		HostRuntime hostRuntime = HostRuntimes.createRuntime(context, properties);
 		hostRuntime.start();
 		this.hostRuntimeId = hostRuntime.getId();
 		return hostRuntime;
 	}
 
-	private IClusterService startSWRepository() throws ServiceException {
+	private ClusterService startSWRepository() throws ServiceException {
 		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(clusterContext, beenId);
 		softwareRepository.init();
 		softwareRepository.start();
 		return softwareRepository;
 	}
 
-	private IClusterService startLogPersister() throws ServiceException {
+	private ClusterService startLogPersister() throws ServiceException {
 		log.info("Starting log persister");
 		ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(clusterContext, beenId, hostRuntimeId);
 		logPersister.start();
@@ -283,7 +283,7 @@ public class Runner implements Reapable {
 		return logPersister;
 	}
 
-	private IClusterService startRepository(Storage storage) throws ServiceException {
+	private ClusterService startRepository(Storage storage) throws ServiceException {
 		ObjectRepository objectRepository = ObjectRepository.create(clusterContext, storage, beenId);
 		objectRepository.start();
 		return objectRepository;

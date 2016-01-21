@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A special thread whose purpose is to release the resources of an interrupted
- * {@link IClusterService}.
+ * {@link ClusterService}.
  * 
  * @author darklight
  * 

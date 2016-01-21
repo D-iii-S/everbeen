@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -38,7 +38,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author donarus
  * 
  */
-public final class HostRuntime implements IClusterService {
+public final class HostRuntime implements ClusterService {
 
 	private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
 
