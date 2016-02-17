@@ -63,7 +63,6 @@ public class SoftwareRepository implements ClusterService {
 
 		info = new ServiceInfo(SERVICE_NAME, beenId);
 		info.setParam(ADDRESSES, createInterfacesInfo());
-//		info.setServiceInfo("");
 		info.setServiceState(ServiceState.OK);
 		info.setHazelcastUuid(clusterCtx.getInstanceType() != NodeType.NATIVE
 				? clusterCtx.getCluster().getLocalMember().getUuid() : null);

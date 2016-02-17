@@ -1,8 +1,8 @@
 package cz.cuni.mff.d3s.been.util;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.StringTokenizer;
@@ -21,14 +21,16 @@ public class SocketAddrUtils {
 	private static final String LIST_SEPARATOR = ",";
 
 	/**
-	 * Create a string representation of a socket address
+	 * Create a string representation of a socket address.
+	 * <p>
+	 * The string representation is of the form (host):port.
 	 *
 	 * @param sockAddr The socket address
 	 *
 	 * @return The string representation of that socket address
 	 */
 	public static String sockAddrToString(InetSocketAddress sockAddr) {
-		final String hostName = stripAddrScope(sockAddr.getHostName());
+		final String hostName = stripAddrZone(sockAddr.getHostName());
 		return new StringBuilder()
 				.append(LEFT_DELIM).append(hostName).append(RIGHT_DELIM)
 				.append(PORT_SEPARATOR)
@@ -36,23 +38,25 @@ public class SocketAddrUtils {
 	}
 
 	/**
-	 * Strip the scope from a hostname (ipv6)
+	 * Strip the zone from an IPv6 hostname
 	 *
-	 * @param addr Address whose scope should be stripped
+	 * @param addr Address whose zone should be stripped
 	 *
-	 * @return The address, scope stripped
+	 * @return The address without zone
 	 */
-	private static String stripAddrScope(String addr) {
-		int scopeSignPos = addr.indexOf('%');
-		return (scopeSignPos > 0) ? addr.substring(0, scopeSignPos) : addr;
+	private static String stripAddrZone(String addr) {
+		int zoneSignPos = addr.indexOf('%');
+		return (zoneSignPos > 0) ? addr.substring(0, zoneSignPos) : addr;
 	}
 
 	/**
-	 * Create a string representation of multiple socket addresses
+	 * Create a string representation of multiple socket addresses.
+	 * <p>
+	 * The string representation is a comma delimited list of individual socket addresses.
 	 *
 	 * @param sockAddrs Socket addresses to include
 	 *
-	 * @return A comma-separated list of socket addresses
+	 * @return A list of socket addresses
 	 */
 	public static String sockAddrsToString(Collection<InetSocketAddress> sockAddrs) {
 		final StringBuilder addrs = new StringBuilder();
@@ -78,18 +82,20 @@ public class SocketAddrUtils {
 	 * @throws java.lang.NumberFormatException When the port is not an integer
 	 */
 	public static InetSocketAddress parseReachableSockAddr(String sockAddrString, int reachTimeout) throws UnknownHostException {
+		
+		// First just parse everything from the string.
 		final int lbr = sockAddrString.indexOf(LEFT_DELIM);
-		final int rbr = sockAddrString.lastIndexOf(RIGHT_DELIM);
-		if (lbr < 0 || rbr < 0) throw new UnknownHostException(String.format("Unparseable socket addr string: '%s'", sockAddrString));
+		final int rbr = sockAddrString.indexOf(RIGHT_DELIM,lbr+1);
+		final int psp = sockAddrString.indexOf(PORT_SEPARATOR,rbr+1);
+		if (lbr < 0 || rbr < 0 || psp < 0) throw new UnknownHostException(String.format("Invalid socket address string: '%s'", sockAddrString));
 		final String host = sockAddrString.substring(lbr + 1, rbr);
-		final InetAddress inetAddr = InetAddress.getByName(host);
-		try {
-			if (!inetAddr.isReachable(reachTimeout)) return null;
-		} catch (IOException e) {
-			return null;
-		}
-		final int port = Integer.parseInt(sockAddrString.substring(rbr + 2)); // also skip the double dot
-		return new InetSocketAddress(inetAddr, port);
+		final int port = Integer.parseInt(sockAddrString.substring(psp + 1));
+
+		// Now try to connect to the address and port specified.
+		final InetSocketAddress address = new InetSocketAddress(host, port);
+		try (Socket socket = new Socket (address.getAddress(), address.getPort())) { }
+		catch (IOException e) { return (null); }
+		return (address);
 	}
 
 	/**
