@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.*;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -220,13 +221,11 @@ final class ProcessManagerContext {
 		List<String> taskDirs = hostInfo.getTaskDirs();
 		taskDirs.clear();
 
-		try {
-			final Path workingDirectory = Paths.get(hostInfo.getTasksWorkingDirectory());
-
-			for (Path item : Files.newDirectoryStream(workingDirectory)) {
+		final Path workingDirectory = Paths.get(hostInfo.getTasksWorkingDirectory());
+		try (DirectoryStream<Path> directory = Files.newDirectoryStream(workingDirectory)) {
+			for (Path item : directory) {
 				taskDirs.add(item.toAbsolutePath().toString());
 			}
-
 		} catch (IOException | InvalidPathException e) {
 			log.error("Cannot list working directory of tasks", e);
 		}
