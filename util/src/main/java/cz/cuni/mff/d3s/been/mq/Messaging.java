@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public final class Messaging {
 	/**
-	 * 0MQ protocol name for inter-process communication.
+	 * 0MQ protocol name for in-process communication.
 	 */
 	private static final String INPROC_PROTO = "inproc";
 

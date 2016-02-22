@@ -11,16 +11,13 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
 
 /**
- * Receiver for a queue in inter-process communication.
+ * Receiver for a queue in in-process communication.
  * 
- * The queue can send/receive only one type of an object, specified by the type
- * parameter.
+ * The queue can send and receive only one object type, specified by the type parameter.
  * 
- * We do not care who are the senders. The receiver's responsibility is just to
- * provide received messages to a higher level.
+ * We do not care who are the senders. The receiver is responsible for passing messages on to a higher level.
  * 
- * Implementation notes: Implemented using 0MQ PUSH-PULL model in 0MQ. This is
- * the PULL part.
+ * Implementation notes: Implemented using 0MQ PUSH-PULL model in 0MQ. This is the PULL part.
  * 
  * @see cz.cuni.mff.d3s.been.mq.InprocMessageReceiver
  * @author Martin Sixta
@@ -58,8 +55,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	/**
 	 * Creates a new receiver
 	 * 
-	 * The receiver is not bind to its queue and call to {@link #bind()} is
-	 * required before receiving any messages.
+	 * The receiver is not bound to its queue and call to {@link #bind()} is required before receiving any messages.
 	 * 
 	 * @param context Context to create the receiver in
 	 * @param queue Queue the receiver will listen on
@@ -72,9 +68,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	}
 
 	public void bind() throws MessagingException {
-		if (isConnected()) {
-			return; // already connected
-		}
+		if (isConnected()) return;
 
 		socket = context.socket(ZMQ.PULL);
 		int port = socket.bind(INPROC_CONN);
@@ -85,13 +79,12 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 		}
 
 		log.debug("IMessageReceiver is bind to address {} ", INPROC_CONN);
-
 	}
 
 	@Override
 	public T receive() throws MessagingException {
 		if (!isConnected()) {
-			throw new MessagingException("Receive on unbind socket.");
+			throw new MessagingException("Receive on unbound socket.");
 		}
 
 		try {
@@ -129,5 +122,4 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	public InprocMessageSender<T> createSender() {
 		return new InprocMessageSender<>(context, queue);
 	}
-
 }

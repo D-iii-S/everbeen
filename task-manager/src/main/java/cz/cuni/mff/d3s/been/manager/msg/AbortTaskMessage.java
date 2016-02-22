@@ -10,6 +10,7 @@ import cz.cuni.mff.d3s.been.manager.action.TaskAction;
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 final class AbortTaskMessage extends AbstractEntryTaskMessage {
 	private final String msg;
 

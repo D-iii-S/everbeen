@@ -49,7 +49,7 @@ final class TaskContextCheckerAction implements TaskAction {
 	 * tasks from it are finished or aborted). If yes, calls the context cleanup
 	 * procedure.
 	 * 
-	 * Serialization for multiply cluster members is ensured by cluster locks.
+	 * Serialization for multiple cluster members is ensured by cluster locks.
 	 * 
 	 * @throws TaskActionException
 	 */

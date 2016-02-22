@@ -12,12 +12,13 @@ import cz.cuni.mff.d3s.been.manager.selector.NoRuntimeFoundException;
 import cz.cuni.mff.d3s.been.manager.selector.RuntimeSelectors;
 
 /**
- * Message which checks scheduability of a task.
+ * Message which checks whether a task can be scheduled.
  * 
  * If a task can be scheduled an appropriate action should take place.
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 public class CheckSchedulabilityMessage implements TaskMessage {
 	private final TaskEntry entry;
 
@@ -51,34 +52,20 @@ public class CheckSchedulabilityMessage implements TaskMessage {
 	/**
 	 * Checks whether the task is waiting on another task.
 	 * 
-	 * @param ctx
-	 *          connection to the cluster
-	 * @return true if the task is waiting on another task, false otherwise
+	 * @param ctx Connection to the cluster
+	 * @return Returns true if the task is waiting on another task that is not yet done
 	 */
 	private boolean isWaitingOnTask(final ClusterContext ctx) {
-		final String taskDependency = entry.getTaskDependency();
+		String dependencyString = entry.getTaskDependency();
+		
+		// If the dependency attribute is empty, we obviously do not wait on anyone.
+		if (dependencyString == null || dependencyString.isEmpty()) return (false);
 
-		if (taskDependency == null || taskDependency.isEmpty()) {
-			return false;
-		}
-
-		final TaskEntry task = ctx.getTasks().getTask(taskDependency);
-
-		if (task == null) {
-			return false;
-		} else {
-			return !isTaskDone();
-		}
-
-	}
-
-	/**
-	 * Checks whether the task is done executing
-	 * 
-	 * @return whether the task is in ABORTED or FINISHED state
-	 */
-	private boolean isTaskDone() {
-		final TaskState state = entry.getState();
-		return (state == ABORTED) || (state == FINISHED);
+		// We have a specified dependency attribute, check the state of that task.
+		TaskEntry dependencyTask = ctx.getTasks().getTask(dependencyString);
+		if (dependencyTask == null) return (false); 
+		TaskState dependencyState = dependencyTask.getState();
+		boolean dependencyDone = (dependencyState == ABORTED) || (dependencyState == FINISHED); 
+		return (!dependencyDone);
 	}
 }

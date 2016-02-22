@@ -7,10 +7,11 @@ import cz.cuni.mff.d3s.been.manager.action.Actions;
 import cz.cuni.mff.d3s.been.manager.action.TaskAction;
 
 /**
- * Messages which handles new tasks.
+ * Message which handles new tasks.
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 final class NewTaskMessage extends AbstractEntryTaskMessage {
 
 	/**

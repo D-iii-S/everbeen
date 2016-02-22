@@ -103,9 +103,8 @@ final class ScheduleTaskAction implements TaskAction {
 			log.debug("Task {} scheduled on {}", id, receiverId);
 
 		} catch (NoRuntimeFoundException e) {
-			String msg = String.format("No runtime found for task %s", entry.getId());
-			log.debug(msg);
-
+			log.debug("No runtime found for task {}. Will wait for later.", entry.getId());
+			
 			stashTask("No suitable host found");
 		} catch (TimeoutException e) {
 			log.warn("Could not lock task {} in {}. Will try later if needed.", id, LOCK_TIMEOUT);
@@ -118,9 +117,7 @@ final class ScheduleTaskAction implements TaskAction {
 					// quell
 				}
 			}
-
 		}
-
 	}
 
 	/**

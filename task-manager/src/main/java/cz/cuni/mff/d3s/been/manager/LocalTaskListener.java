@@ -24,52 +24,52 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 /**
- * Listens for local key events of the Task Map.
- * 
+ * Handles local update events for the Task Map.
+ * <p> 
+ * The Task Map contains information about all task instances.
+ * Updates to the local portion of the Task Map are turned
+ * into messages that are processed by a dedicated thread
+ * in the host runtime.
  * 
  * @author Martin Sixta
  */
 final class LocalTaskListener extends TaskManagerService implements EntryListener<String, TaskEntry> {
 
-	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
 
-	/** Format of "tasks waiting for a task to finish" query */
+	/** Format of "tasks waiting for another task to finish" query. */
 	private static final String WAITING_TASKS_FMT = "taskContextId = '%s' AND taskDependency = '%s'";
 
-	/** task map */
+	/** Distributed hash map of all task entries. */
 	private IMap<String, TaskEntry> taskMap;
 
-	/** Connection to the cluster */
-	private ClusterContext clusterCtx;
+	/** Connection to the cluster. */
+	private ClusterContext cluster;
 
-	/** sender of "in-task manager" messages */
+	/** Sender of local task manager action  messages. */
 	private IMessageSender<TaskMessage> sender;
 
 	/**
-	 * Creates LocalTaskListener
+	 * Creates local task change listener.
+	 * <p>
+	 * The listener lifecycle is directed by the {@link start} and {@link stop} methods.
 	 * 
-	 * @param clusterCtx
-	 *          connection to the cluster.
+	 * @param argCluster connection to the cluster.
 	 */
-	public LocalTaskListener(ClusterContext clusterCtx) {
-		this.clusterCtx = clusterCtx;
-		taskMap = clusterCtx.getTasks().getTasksMap();
-		MapConfig cfg = clusterCtx.getTasks().getTasksMapConfig();
+	public LocalTaskListener(ClusterContext argCluster) {
+		this.cluster = argCluster;
+		taskMap = argCluster.getTasks().getTasksMap();
+		MapConfig cfg = argCluster.getTasks().getTasksMapConfig();
 
-		if (cfg == null) {
-			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
-		}
-		if (cfg.isCacheValue()) {
-			throw new RuntimeException("Cache value == true for BEEN_MAP_TASKS!");
-		}
-
+		// The distributed task map must be configured in Hazelcast.
+		// Caching of the map values must be disabled in Hazelcast.
+		if (cfg == null) throw new RuntimeException("BEEN_MAP_TASKS does not have a config.");
+		if (cfg.isCacheValue()) throw new RuntimeException("BEEN_MAP_TASKS must not cache entries.");
 	}
 
 	@Override
 	public void start() throws ServiceException {
 		sender = createSender();
-
 		taskMap.addLocalEntryListener(this);
 	}
 
@@ -89,7 +89,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 			String dep = entry.getTaskDependency();
 
 			TaskEntries.setState(entry, WAITING, "Waiting for task %s to finish", dep);
-			clusterCtx.getTasks().putTask(entry);
+			cluster.getTasks().putTask(entry);
 			return;
 		}
 		try {

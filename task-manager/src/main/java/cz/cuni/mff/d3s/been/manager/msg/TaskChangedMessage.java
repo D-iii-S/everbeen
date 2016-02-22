@@ -11,10 +11,11 @@ import cz.cuni.mff.d3s.been.manager.action.Actions;
 import cz.cuni.mff.d3s.been.manager.action.TaskAction;
 
 /**
- * Messages which handles changes of task states.
+ * Message that handles changes of task states.
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 final class TaskChangedMessage extends AbstractEntryTaskMessage {
 
 	private static final Logger log = LoggerFactory.getLogger(TaskChangedMessage.class);

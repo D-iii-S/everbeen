@@ -53,8 +53,7 @@ public class MessageQueues {
 	}
 
 	/**
-	 * Creates named intra-procedural message queue (communication within the
-	 * bounds of one process).
+	 * Creates a named in-process message queue.
 	 * 
 	 * @param queueName
 	 *          name of the qeueue

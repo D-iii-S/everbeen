@@ -7,6 +7,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 abstract class AbstractEntryTaskMessage implements TaskMessage {
 
 	private TaskEntry entry;
